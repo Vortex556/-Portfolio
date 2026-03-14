@@ -155,3 +155,45 @@ body {
     transform: scale(1.03);
     filter: grayscale(0%);
 }
+
+/* BGM 开关：移至顶部 */
+#bgm-control {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    transition: all 0.4s ease;
+}
+
+/* 音符样式 */
+.music-note {
+    font-size: 1rem;
+    display: inline-block;
+    transition: 0.3s;
+}
+
+/* 旋转动画定义 */
+@keyframes rotating {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 当激活播放时，添加这个类名 */
+.music-rotating {
+    animation: rotating 3s linear infinite;
+}
+
+#bgm-control:hover {
+    background: var(--accent);
+    color: #fff;
+}

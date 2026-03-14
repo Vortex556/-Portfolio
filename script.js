@@ -71,3 +71,76 @@ document.querySelector('.close-btn').addEventListener('click', () => reader.clas
 
 // 初始化
 window.onload = typeWriter;
+
+// --- BGM 全能控制逻辑 ---
+const bgmPlayer = document.getElementById('bgm-player');
+const bgmControl = document.getElementById('bgm-control');
+const bgmIcon = document.getElementById('bgm-icon');
+const musicNote = document.getElementById('music-note');
+let isPlaying = false;
+const targetVolume = 0.3;
+
+// 渐入函数
+function fadeIn() {
+    bgmPlayer.volume = 0;
+    bgmPlayer.play().then(() => {
+        let vol = 0;
+        const fadeTimer = setInterval(() => {
+            if (vol < targetVolume) {
+                vol += 0.02;
+                bgmPlayer.volume = Math.min(vol, targetVolume);
+            } else {
+                clearInterval(fadeTimer);
+            }
+        }, 100);
+        // 开启旋转
+        musicNote.classList.add('music-rotating');
+        bgmIcon.innerText = "SOUND ON";
+        isPlaying = true;
+    }).catch(error => {
+        console.log("浏览器拦截了自动播放，等待用户交互");
+    });
+}
+
+// 渐出函数
+function fadeOut() {
+    let vol = bgmPlayer.volume;
+    const fadeTimer = setInterval(() => {
+        if (vol > 0) {
+            vol -= 0.02;
+            bgmPlayer.volume = Math.max(vol, 0);
+        } else {
+            bgmPlayer.pause();
+            clearInterval(fadeTimer);
+            // 停止旋转
+            musicNote.classList.remove('music-rotating');
+            bgmIcon.innerText = "SOUND OFF";
+            isPlaying = false;
+        }
+    }, 100);
+}
+
+// 手动开关点击
+bgmControl.addEventListener('click', () => {
+    if (isPlaying) {
+        fadeOut();
+    } else {
+        fadeIn();
+    }
+});
+
+// 核心：实现“一进去就响”的平替方案
+// 当用户第一次点击页面、滚动或触摸时，立即触发渐入
+const autoPlayHandler = () => {
+    if (!isPlaying) {
+        fadeIn();
+    }
+    // 触发一次后移除监听，防止重复触发
+    document.removeEventListener('mousedown', autoPlayHandler);
+    document.removeEventListener('scroll', autoPlayHandler);
+    document.removeEventListener('touchstart', autoPlayHandler);
+};
+
+document.addEventListener('mousedown', autoPlayHandler);
+document.addEventListener('scroll', autoPlayHandler);
+document.addEventListener('touchstart', autoPlayHandler);
