@@ -37,7 +37,8 @@ const contentMap = {
     "liaoyuan": typeof peaceContent !== 'undefined' ? peaceContent : null,
     "luye-1": typeof wodiContent !== 'undefined' ? wodiContent : null,
     "nanyi": typeof summerContent !== 'undefined' ? summerContent : null,
-    "seven": typeof sevenContent !== 'undefined' ? sevenContent : null
+    "seven": typeof sevenContent !== 'undefined' ? sevenContent : null,
+    "fanlinggen": typeof fanlinggenContent !== 'undefined' ? fanlinggenContent : null
 };
 
 // 4. 点击加载内容逻辑
@@ -45,23 +46,27 @@ document.querySelectorAll('.clickable').forEach(item => {
     item.addEventListener('click', () => {
         const id = item.getAttribute('data-content');
         
-        // 如果没有 data-content，说明它是外链，不触发弹窗逻辑
-        if (!id) return;
+        if (!id) return; // 如果是外链则跳过
 
-        readerTitle.innerText = item.innerText.split(' ')[0];
+        // 提取标题（去掉序号）
+        readerTitle.innerText = item.innerText.split(' ')[0].replace('《', '').replace('》', '');
         reader.classList.add('active');
 
         // 读取映射内容
         const content = contentMap[id];
         
         if (content) {
-            // 保持分段逻辑
-            readerBody.innerHTML = content.split('\n')
-                .filter(line => line.trim() !== "")
-                .map(line => `<p>${line.trim()}</p>`)
-                .join('');
+            // 如果内容包含 <video> 或 <p>，直接注入 HTML，不再强制分段处理字符串
+            if (content.includes('<') && content.includes('>')) {
+                readerBody.innerHTML = content;
+            } else {
+                readerBody.innerHTML = content.split('\n')
+                    .filter(line => line.trim() !== "")
+                    .map(line => `<p>${line.trim()}</p>`)
+                    .join('');
+            }
         } else {
-            readerBody.innerHTML = `<p>抱歉，内容“${id}”尚未成功加载。请检查是否在 HTML 中引入了对应的 .js 文件。</p>`;
+            readerBody.innerHTML = `<p style="color:#d32f2f;">抱歉，内容“${id}”尚未成功加载。请检查 fanlinggen.js 是否已正确引入并定义了变量。</p>`;
         }
     });
 });
