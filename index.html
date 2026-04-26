@@ -127,22 +127,27 @@
     <script>
         document.querySelectorAll('[data-content="fanlinggen"]').forEach(item => {
             item.addEventListener('click', () => {
-                // 这里的链接已修改为你仓库对应的 Release 下载直链
+                // 视频 HTML 片段
                 const videoHtml = `
-                    <div style="margin-bottom: 20px; background: #000; border-radius: 4px; overflow: hidden;">
+                    <div class="video-container" style="margin-bottom: 25px; background: #000; border-radius: 8px; overflow: hidden; line-height: 0;">
                         <video controls width="100%" style="display:block;" preload="auto">
-                            <source src="https://github.com/nongluoer/portfolio/releases/download/v1.0/rice.mp4" type="video/mp4">
+                            <source src="https://github.com/Vortex556/-Portfolio/releases/download/1.0/rice.mp4" type="video/mp4">
                             您的浏览器不支持播放该视频。
                         </video>
                     </div>
                 `;
-                // 延迟执行确保分页内容已生成，然后将视频插入到顶部
+                
+                // 使用定时器确保在 script.js 的内容渲染完成后再进行操作
                 setTimeout(() => {
                     const body = document.getElementById('reader-body');
                     if (body) {
-                        body.innerHTML = videoHtml + body.innerHTML;
+                        // 1. 检查是否已经存在视频（防止双重播放器）
+                        if (!body.querySelector('video')) {
+                            // 2. 将视频插入到正文内容的最前面
+                            body.insertAdjacentHTML('afterbegin', videoHtml);
+                        }
                     }
-                }, 50);
+                }, 100); 
             });
         });
     </script>
