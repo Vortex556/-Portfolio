@@ -33,14 +33,14 @@ body {
 .typewriter { font-family: 'ZCOOL XiaoWei', serif; font-size: 4rem; }
 .tagline { color: #888; letter-spacing: 5px; font-size: 0.8rem; margin-top: 10px; }
 
-/* 阅读器抽屉 */
+/* 阅读器抽屉布局 */
 .reader-overlay {
     position: fixed; top: 0; right: -100%; width: 100%; height: 100%;
     background: var(--glass); z-index: 9000; transition: right 0.6s cubic-bezier(0.77, 0, 0.175, 1);
     overflow-y: auto; padding: 5% 15%;
 }
 .reader-overlay.active { right: 0; }
-.reader-content { max-width: 800px; margin: 0 auto; line-height: 2; text-align: justify; }
+.reader-content { max-width: 800px; margin: 0 auto; }
 .close-btn { cursor: pointer; color: var(--accent); font-weight: bold; margin-bottom: 2rem; display: block; }
 
 #reader-title { 
@@ -51,9 +51,37 @@ body {
     padding-bottom: 1rem;
 }
 
-#reader-body { font-size: 1.1rem; color: #333; }
+/* --- 核心修正：阅读器正文内容 --- */
+#reader-body { 
+    font-size: 1.1rem; 
+    color: #333; 
+    /* 强制保留文本中的所有换行和空格 */
+    white-space: pre-wrap !important; 
+    /* 强制取消首行缩进，由文本内的空格自行控制 */
+    text-indent: 0 !important; 
+    /* 左对齐，防止空格被拉伸变形 */
+    text-align: left !important; 
+    line-height: 1.8;
+    word-break: break-word;
+}
 
-/* 目录布局调整 */
+/* 统一正文内所有段落标签的行为 */
+#reader-body p {
+    margin-bottom: 1.5rem !important;
+    text-indent: 0 !important; 
+    line-height: 1.8;
+}
+
+/* 修正媒体素材样式 */
+#reader-body img, 
+#reader-body video {
+    display: block;
+    margin: 3rem auto;
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+/* 目录布局 */
 .portfolio-container { padding: 8rem 10% 5rem 10%; }
 .category-section { margin-bottom: 10rem; }
 
@@ -74,7 +102,7 @@ body {
     color: #333;
 }
 
-/* 列表美化 */
+/* 列表样式 */
 .work-list { list-style: none; }
 .work-list li { 
     padding: 1.5rem 0; 
@@ -84,13 +112,12 @@ body {
     justify-content: space-between; 
     align-items: center; 
 }
-.clickable { cursor: none !important; } /* 强制光标隐藏 */
+.clickable { cursor: none !important; }
 .clickable:hover { color: var(--accent); transform: translateX(10px); }
 
 .tag { font-size: 0.7rem; border: 1px solid #ddd; padding: 2px 6px; border-radius: 4px; color: #999; }
 .award { background: #fff0f0; color: #d32f2f; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
 
-/* 链接样式增强 */
 .work-list li a { 
     display: flex; 
     justify-content: space-between; 
@@ -98,7 +125,7 @@ body {
     text-decoration: none; 
     color: inherit; 
     transition: 0.3s;
-    cursor: none !important; /* 强制覆盖链接默认手型 */
+    cursor: none !important;
 }
 
 .design-chips { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -106,38 +133,21 @@ body {
 
 .contact-footer { padding: 5rem 10%; text-align: center; border-top: 1px solid #eee; color: #888; }
 
-/* 内容区域媒体与段落样式 */
-#reader-body img, 
-#reader-body video {
-    display: block;
-    margin: 3rem auto;
-    max-width: 100%;
-    border-radius: 8px;
-}
-
-#reader-body p {
-    margin-bottom: 1.5rem;
-    text-indent: 2em;
-    line-height: 1.8;
-}
-
-/* 海报展示画廊 */
 /* 瀑布流画廊 */
 .poster-gallery {
-    column-count: 3;        /* 电脑端显示 3 列 */
-    column-gap: 20px;       /* 图片间的间距 */
+    column-count: 3;
+    column-gap: 20px;
     padding-top: 20px;
 }
 
-/* 手机和平板端适配 */
 @media (max-width: 900px) { .poster-gallery { column-count: 2; } }
 @media (max-width: 600px) { .poster-gallery { column-count: 1; } }
 
 .poster-item {
-    display: inline-block;  /* 必须设置为行内块 */
-    width: 100%;            /* 宽度撑满所在列 */
-    margin-bottom: 20px;    /* 图片下方的垂直间距 */
-    break-inside: avoid;    /* 防止图片在分页时被切断 */
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 20px;
+    break-inside: avoid;
     overflow: hidden;
     border-radius: 8px;
     cursor: none !important;
@@ -145,7 +155,7 @@ body {
 
 .poster-item img {
     width: 100%;
-    height: auto;           /* 关键：高度自动，保持原始比例 */
+    height: auto;
     display: block;
     transition: transform 0.5s ease;
     filter: grayscale(20%);
@@ -156,7 +166,7 @@ body {
     filter: grayscale(0%);
 }
 
-/* BGM 开关：移至顶部 */
+/* BGM 控制 */
 #bgm-control {
     position: fixed;
     top: 30px;
@@ -175,20 +185,17 @@ body {
     transition: all 0.4s ease;
 }
 
-/* 音符样式 */
 .music-note {
     font-size: 1rem;
     display: inline-block;
     transition: 0.3s;
 }
 
-/* 旋转动画定义 */
 @keyframes rotating {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
 
-/* 当激活播放时，添加这个类名 */
 .music-rotating {
     animation: rotating 3s linear infinite;
 }
