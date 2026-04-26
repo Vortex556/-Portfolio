@@ -127,27 +127,33 @@
     <script>
         document.querySelectorAll('[data-content="fanlinggen"]').forEach(item => {
             item.addEventListener('click', () => {
-                // 视频 HTML 片段
-                const videoHtml = `
-                    <div class="video-container" style="margin-bottom: 25px; background: #000; border-radius: 8px; overflow: hidden; line-height: 0;">
-                        <video controls width="100%" style="display:block;" preload="auto">
-                            <source src="https://github.com/Vortex556/-Portfolio/releases/download/1.0/rice.mp4" type="video/mp4">
-                            您的浏览器不支持播放该视频。
-                        </video>
-                    </div>
-                `;
+                // 确保使用你已经填好的 Release 正确链接
+                const targetSrc = "https://github.com/Vortex556/-Portfolio/releases/download/1.0/rice.mp4";
                 
-                // 使用定时器确保在 script.js 的内容渲染完成后再进行操作
                 setTimeout(() => {
                     const body = document.getElementById('reader-body');
                     if (body) {
-                        // 1. 检查是否已经存在视频（防止双重播放器）
-                        if (!body.querySelector('video')) {
-                            // 2. 将视频插入到正文内容的最前面
+                        // 寻找弹窗里已有的 video 标签并更新它，避免产生第二个
+                        let videoElement = body.querySelector('video');
+                        
+                        if (videoElement) {
+                            // 如果 fanlinggen.js 已经生成了一个播放器，直接换掉它的地址
+                            videoElement.src = targetSrc;
+                            videoElement.load();
+                        } else {
+                            // 如果还没生成，我们再插入
+                            const videoHtml = `
+                                <div class="video-container" style="margin-bottom: 25px; background: #000; border-radius: 8px; overflow: hidden; line-height: 0;">
+                                    <video controls width="100%" style="display:block;" preload="auto">
+                                        <source src="${targetSrc}" type="video/mp4">
+                                        您的浏览器不支持播放该视频。
+                                    </video>
+                                </div>
+                            `;
                             body.insertAdjacentHTML('afterbegin', videoHtml);
                         }
                     }
-                }, 100); 
+                }, 150); 
             });
         });
     </script>
